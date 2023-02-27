@@ -10,4 +10,4 @@ def not_blank(question):
             print("Error: Name cannot be blank")
 
 
-name = not_blank("Recipe Name: ")
+recipe_name = not_blank("Recipe Name: ")

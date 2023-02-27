@@ -24,7 +24,7 @@ def not_blank(question):
 
 # Get recipe name
 
-name = not_blank("Recipe Name: ")
+recipe_name = not_blank("Recipe Name: ")
 
 # Loop to get recipe ingredients (end when exit code is typed)
 
