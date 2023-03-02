@@ -13,10 +13,10 @@ while valid:
         ingredients_list.append(ingredient_name)
         count += 1
 
-    if ingredient_name == exit_code and count >= 2:
+    elif ingredient_name == exit_code and count >= 2:
         valid = False
         print("Here is your list of ingredients:")
         print(ingredients_list)
 
-    if ingredient_name == exit_code and count < 2:
+    elif ingredient_name == exit_code and count < 2:
         print("Error: Please enter at least 2 ingredients")
