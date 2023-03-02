@@ -4,15 +4,16 @@ count = 0
 
 valid = True
 while valid:
-    ingredients_list.append(input("Enter an ingredient: "))
+    ingredient_name = input("Enter an ingredient: ")
 
-    if ingredients_list[-1] != exit_code:
+    if ingredient_name != exit_code:
+        ingredients_list.append(ingredient_name)
         count += 1
 
-    if ingredients_list[-1] == exit_code and count >= 2:
+    if ingredient_name == exit_code and count >= 2:
         valid = False
         print(ingredients_list)
 
-    if ingredients_list[-1] == exit_code and count <= 2:
+    if ingredient_name == exit_code and count < 2:
         print("Error")
 
