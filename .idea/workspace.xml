@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="34599997-24ca-46b0-9065-9ccd08c9611c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ingredient_loop.py" beforeDir="false" afterPath="$PROJECT_DIR$/ingredient_loop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/name_not_blank.py" beforeDir="false" afterPath="$PROJECT_DIR$/name_not_blank.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/serving_size.py" beforeDir="false" afterPath="$PROJECT_DIR$/serving_size.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +23,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/serving_size.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />

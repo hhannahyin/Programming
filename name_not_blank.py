@@ -6,6 +6,7 @@ def not_blank(question):
 
         if response != "":
             return response
+
         else:
             print("Error: Name cannot be blank")
 
