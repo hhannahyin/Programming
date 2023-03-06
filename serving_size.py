@@ -15,5 +15,9 @@ def int_check(question):
             print("Error: Please enter a number")
 
 
-serving_size = int_check("What is the serving size of this recipe? ")
-desired_size = int_check("What is your desired serving size? ")
+serving_size = float(int_check("What is the serving size of this recipe? "))
+desired_size = float(int_check("What is your desired serving size? "))
+
+scale_factor = round(desired_size / serving_size, 2)
+
+print("The scale factor is: " + str(scale_factor))
