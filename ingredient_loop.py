@@ -9,7 +9,10 @@ print("Please enter the names of the ingredients in your recipe. \nDo not includ
 while valid:
     ingredient_name = input("Enter an ingredient: ")
 
-    if ingredient_name != exit_code:
+    if ingredient_name == "":
+        print("Error: Name cannot be blank")
+
+    elif ingredient_name != exit_code:
         ingredients_list.append(ingredient_name)
         count += 1
 
