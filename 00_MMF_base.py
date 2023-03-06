@@ -2,7 +2,7 @@
 
 # functions go here
 
-# checks that the recipe name is not blank
+# checks that the name is not blank
 def not_blank(question):
     valid = False
 
@@ -17,35 +17,64 @@ def not_blank(question):
         else:
             print("Error: Name cannot be blank")
 
-# Main Routine
+
+# checks that the value entered is a number that is more than 0
+def int_check(question):
+    valid = False
+
+    while not valid:
+        response = input(question)
+
+        try:
+            # error message is printed if the number is equal to or less than 0, loop repeats
+            if float(response) <= 0:
+                print("Error: Serving size must be more than 0")
+
+            # if the value meets the criteria, program continues
+            else:
+                return response
+
+        # if the value entered cannot be turned into a float, then an error message is printed and the loop repeats
+        except ValueError:
+            print("Error: Please enter a number")
 
 
-# Set up dictionaries / lists needed to hold data
+# ------Main Routine------
 
-# Get recipe name
 
+# dictionaries / lists needed to hold data
+ingredients_list = []
+exit_code = "xxx"
+count = 0
+
+# get recipe name
 recipe_name = not_blank("Recipe Name: ")
 
-# Loop to get recipe ingredients (end when exit code is typed)
+# loop to get recipe ingredients (end when exit code is typed)
 
-# Get ingredient name
+# get ingredient name
 
-# Get unit of measurement
+# get unit of measurement
 
-# Get amount
+# get amount
 
-# Store item as a unit (use list)
+# store item as a unit (use list)
 
-# When exit code is typed check that the recipe has at least 2 ingredients and end collection loop
+# when exit code is typed check that the recipe has at least 2 ingredients and end collection loop
 
-# Get recipe serving size
+# get recipe serving size
+serving_size = float(int_check("What is the serving size of this recipe? "))
 
-# Ask for servings desired
+# ask for servings desired
+desired_size = float(int_check("What is your desired serving size? "))
 
-# Find scale factor
+# find scale factor
+scale_factor = round(desired_size / serving_size, 2)
 
-# Convert relevant ingredients to grams
+print("The scale factor is: " + str(scale_factor))
 
-# Scale ingredients
+# convert relevant ingredients to grams
 
-# Output new, updated ingredient list
+# scale ingredients
+
+# output new, updated ingredient list

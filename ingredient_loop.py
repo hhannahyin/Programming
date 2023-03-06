@@ -1,12 +1,13 @@
 ingredients_list = []
 exit_code = "xxx"
 count = 0
-valid = True
 
 print("Please enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
       "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
-while valid:
+valid = False
+
+while not valid:
     ingredient_name = input("Enter an ingredient: ")
 
     if ingredient_name == "":
@@ -17,7 +18,7 @@ while valid:
         count += 1
 
     elif ingredient_name == exit_code and count >= 2:
-        valid = False
+        valid = True
         print("Here is your list of ingredients:")
         print(ingredients_list)
 
