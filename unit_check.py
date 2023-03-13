@@ -12,4 +12,4 @@ def unit_check(question):
             return response
 
 
-unit_name = [unit_check("Unit: ")]
+unit_name = unit_check("Unit: ")

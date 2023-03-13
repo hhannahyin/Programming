@@ -1,6 +1,6 @@
 # import statements
 
-# functions go here
+# ------ functions ------
 
 # checks that the name is not blank
 def not_blank(question):
@@ -39,28 +39,74 @@ def int_check(question):
             print("Error: Please enter a number")
 
 
-# ------Main Routine------
+# checks that the unit entered is valid
+def unit_check(question):
+    # list of units that the user is allowed to enter
+    valid_unit_list = ["", "g", "mg", "kg", "ml", "L", "tsp", "Tbsp", "cup", "cups", "oz", "pint", "pints", "quart",
+                       "quarts", "lb", "stick", "sticks"]
+    valid = False
+
+    while not valid:
+        response = input(question)
+
+        # prints an error message when the unit that the user typed is not one of the units in the valid list
+        if response not in valid_unit_list:
+            print("Error: Please enter a valid unit")
+        # program continues when a valid unit is entered
+        else:
+            return response
 
 
-# dictionaries / lists needed to hold data
-ingredients_list = []
+# ------ Main Routine ------
+
+# dictionaries / lists to hold data
 exit_code = "xxx"
+ingredients_list = []
+units_list = []
+amount_list = []
 count = 0
 
 # get recipe name
 recipe_name = not_blank("Recipe Name: ")
 
-# loop to get recipe ingredients (end when exit code is typed)
+# instructions for inputting ingredient names
+print("Please enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
+      "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
-# get ingredient name
+ok = False
 
-# get unit of measurement
+# loop to ask for recipe ingredients
+while not ok:
+    ingredient_name = input("Enter an ingredient: ")
 
-# get amount
+    # prints an error message if the name is blank
+    if ingredient_name == "":
+        print("Error: Name cannot be blank")
 
-# store item as a unit (use list)
+    # prints an error message if user tries to end the loop but hasn't met the requirements yet
+    elif ingredient_name == exit_code and count < 2:
+        print("Error: Please enter at least 2 ingredients")
 
-# when exit code is typed check that the recipe has at least 2 ingredients and end collection loop
+    # ends the loops and prints the list of ingredients
+    elif ingredient_name == exit_code and count >= 2:
+        ok = True
+        print("Here is your list of ingredients:")
+        print(ingredients_list)
+
+    # adds an ingredient to the list
+    else:
+        ingredients_list.append(ingredient_name)
+        count += 1
+
+# gets the unit of measurement for every ingredient entered previously
+for item in ingredients_list:
+    unit_name = unit_check("Unit of " + item + ": ")
+    units_list.append(unit_name)
+
+# gets the amount needed for every ingredient entered previously
+for item in ingredients_list:
+    amount = int_check("Amount of " + item + ": ")
+    amount_list.append(amount)
 
 # get recipe serving size
 serving_size = float(int_check("What is the serving size of this recipe? "))

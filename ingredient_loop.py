@@ -15,13 +15,13 @@ while not valid:
     if ingredient_name == "":
         print("Error: Name cannot be blank")
 
+    elif ingredient_name == exit_code and count < 2:
+        print("Error: Please enter at least 2 ingredients")
+
     elif ingredient_name == exit_code and count >= 2:
         valid = True
         print("Here is your list of ingredients:")
         print(ingredients_list)
-
-    elif ingredient_name == exit_code and count < 2:
-        print("Error: Please enter at least 2 ingredients")
 
     else:
         ingredients_list.append(ingredient_name)
