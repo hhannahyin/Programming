@@ -6,7 +6,7 @@ def int_check(question):
 
         try:
             if float(response) <= 0:
-                print("Error: Serving size must be more than 0")
+                print("Error: Number must be more than 0")
 
             else:
                 return response

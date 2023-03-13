@@ -28,7 +28,7 @@ def int_check(question):
         try:
             # error message is printed if the number is equal to or less than 0, loop repeats
             if float(response) <= 0:
-                print("Error: Serving size must be more than 0")
+                print("Error: Number must be more than 0")
 
             # if the value meets the criteria, program continues
             else:
