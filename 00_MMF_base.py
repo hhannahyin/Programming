@@ -1,5 +1,10 @@
 # import statements
 
+import csv
+with open("/Users/hannah/Downloads/Conversions - Sheet1.csv", mode="r") as csvfile:
+    conversions_sheet = csv.DictReader(csvfile)
+
+
 # ------ functions ------
 
 # checks that the name is not blank
@@ -52,6 +57,7 @@ def unit_check(question):
         # prints an error message when the unit that the user typed is not one of the units in the valid list
         if response not in valid_unit_list:
             print("Error: Please enter a valid unit")
+
         # program continues when a valid unit is entered
         else:
             return response
@@ -64,6 +70,7 @@ exit_code = "xxx"
 ingredients_list = []
 units_list = []
 amount_list = []
+converted_list = []
 count = 0
 
 # get recipe name
@@ -106,7 +113,7 @@ for item in ingredients_list:
 # gets the amount needed for every ingredient entered previously
 for item in ingredients_list:
     amount = int_check("Amount of " + item + ": ")
-    amount_list.append(amount)
+    amount_list.append(float(amount))
 
 # get recipe serving size
 serving_size = float(int_check("What is the serving size of this recipe? "))
@@ -124,3 +131,18 @@ print("The scale factor is: " + str(scale_factor))
 # scale ingredients
 
 # output new, updated ingredient list
+print(recipe_name.title() + "\n\nIngredients:")
+
+count = 0
+done = False
+
+while done is False:
+
+    if count != len(ingredients_list):
+        converted_list.append(str(amount_list[count]) + " " + units_list[count] + " " + ingredients_list[count])
+        count += 1
+
+    else:
+        done = True
+        finished_list = "\n".join(converted_list)
+        print(finished_list)
