@@ -7,6 +7,28 @@ with open("/Users/hannah/Downloads/Conversions - Sheet1.csv", mode="r") as csvfi
 
 # ------ functions ------
 
+# checks that the response entered is yes or no
+def string_check(question, answer):
+
+    valid = False
+
+    while not valid:
+        response = input(question).lower()
+
+        # if the response is yes or no, then the answer is accepted and the program continues
+        if response in answer:
+            return response
+
+        else:
+            # checks if the user possibly entered 'y' or 'n' for short of yes/no and accepts that answer too
+            for thing in answer:
+                if response == thing[0]:
+                    return thing
+
+            # prints an error message if the answer is not yes or no
+            print("Error: Please answer with yes or no")
+
+
 # checks that the name is not blank
 def not_blank(question):
     valid = False
@@ -66,6 +88,10 @@ def unit_check(question):
 # ------ Main Routine ------
 
 # dictionaries / lists to hold data
+instructions = "This program will help you to convert your recipes to grams and resize them to your liking. When \n" \
+               "prompted, please enter individually the name of your recipe, the names of the ingredients, the unit\n" \
+               "and amount of which these ingredients are measured in, and the serving size of your recipe. Then \n" \
+               "the program will write a new and improved recipe for you to enjoy! :)\n"
 exit_code = "xxx"
 ingredients_list = []
 units_list = []
@@ -73,11 +99,21 @@ amount_list = []
 converted_list = []
 count = 0
 
+# prints instructions for user if they've never used this program before
+used_before = string_check("Have you used this program before? ", ["yes", "no"])
+
+if used_before == "no":
+    print(instructions)
+
+else:
+    print("OK! Thank you for your continued support towards this program :)\n")
+
 # get recipe name
+print("Please enter the name of your recipe")
 recipe_name = not_blank("Recipe Name: ")
 
 # instructions for inputting ingredient names
-print("Please enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
+print("\nPlease enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
       "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
 ok = False
