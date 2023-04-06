@@ -1,7 +1,7 @@
 # import statements
 
 import csv
-with open("/Users/hannah/Downloads/Conversions - Sheet1.csv", mode="r") as csvfile:
+with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
     conversions_sheet = csv.DictReader(csvfile)
 
 
@@ -9,9 +9,9 @@ with open("/Users/hannah/Downloads/Conversions - Sheet1.csv", mode="r") as csvfi
 
 # checks that the response entered is yes or no
 def string_check(question, answer):
-
     valid = False
 
+    # puts the users input in lowercase
     while not valid:
         response = input(question).lower()
 
@@ -69,20 +69,41 @@ def int_check(question):
 # checks that the unit entered is valid
 def unit_check(question):
     # list of units that the user is allowed to enter
-    valid_unit_list = ["", "g", "mg", "kg", "ml", "L", "tsp", "Tbsp", "cup", "cups", "oz", "pint", "pints", "quart",
-                       "quarts", "lb", "stick", "sticks"]
+    valid_unit_list = [
+        [""],
+        ["g", "grams", "gram"],
+        ["mg", "milligrams", "milligram"],
+        ["kg", "kilograms", "kilogram"],
+        ["mL", "millilitres", "ml", "mls", "millilitre"],
+        ["L", "litres", "l", "litre"],
+        ["quart", "quarts", "fl qt", "qt", "q"],
+        ["pint", "pints", "fl pt", "pt", "p"],
+        ["cup", "cups", "c"],
+        ["tbsp", "tablespoons", "tablespoon", "tbs"],
+        ["tsp", "teaspoons", "teaspoon"],
+        ["lb", "pounds", "lbs", "pound"],
+        ["stick", "sticks"],
+        ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
+    ]
+
     valid = False
 
+    # puts the users input in lowercase
     while not valid:
-        response = input(question)
+        response = input(question).lower()
+
+        # looks for the unit entered in the valid list of units
+        for var_list in valid_unit_list:
+            if response in var_list:
+                # changes the response to the first item in the list of different names for the same item
+                # (for easy organisation)
+                response = var_list[0]
+                # if answer is valid then it is accepted and program continues
+                return response
 
         # prints an error message when the unit that the user typed is not one of the units in the valid list
-        if response not in valid_unit_list:
-            print("Error: Please enter a valid unit")
-
-        # program continues when a valid unit is entered
         else:
-            return response
+            print("Error: Please enter a valid unit")
 
 
 # ------ Main Routine ------
@@ -174,6 +195,7 @@ done = False
 
 while done is False:
 
+    # puts everything into one recipe list
     if count != len(ingredients_list):
         converted_list.append(str(amount_list[count]) + " " + units_list[count] + " " + ingredients_list[count])
         count += 1
