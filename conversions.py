@@ -1,33 +1,50 @@
 import csv
-with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
-    conversions_sheet = csv.DictReader(csvfile)
 
-ingredients_list = ["flour", "milk", "eggs", "hello"]
-units_list = ["cup", "tsp", "", "lb"]
-amount_list = [2, 3, 4, 5]
-previous = []
+
+def conversion_check(item):
+
+    ind = units_list.index(item)
+    valid = False
+
+    while not valid:
+        with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
+            conversions_sheet = csv.DictReader(csvfile)
+
+            if item in ml_list:
+                convert = amount_list[ind] * ml_list[item]
+                divide = convert / 250
+                print(convert, divide)
+
+                try:
+                    for row in conversions_sheet:
+                        if ingredients_list[ind] == row["Ingredients"]:
+                            print(row["grams per 250ml"])
+                            convert = round(divide * float(row["grams per 250ml"]), 2)
+                            converted_units_list.append("g")
+                            print(convert)
+                            return convert
+
+                except:
+                    converted_units_list.append("mL")
+                    return convert
+
+            if item in g_list:
+                convert = amount_list[ind] * g_list[item]
+                print(convert)
+                converted_units_list.append("g")
+                return convert
+
+            if item == "":
+                convert = amount_list[ind]
+                converted_units_list.append("")
+                return convert
+
+
+ingredients_list = ["flour", "milk", "eggs", "hello", "no"]
+units_list = ["cup", "tsp", "", "lb", "tbsp"]
+amount_list = [2, 3, 4, 5, 6]
 converted_units_list = []
 converted_amount_list = []
-count = 0
-
-valid_units_list = [
-    [""],
-    ["g", "grams", "gram"],
-    ["mg", "milligrams", "milligram"],
-    ["kg", "kilograms", "kilogram"],
-    ["mL", "millilitres", "ml", "mls", "millilitre"],
-    ["L", "litres", "l", "litre"],
-    ["quart", "quarts", "fl qt", "qt", "q"],
-    ["pint", "pints", "fl pt", "pt", "p"],
-    ["cup", "cups", "c"],
-    ["tbsp", "tablespoons", "tablespoon", "tbs"],
-    ["tsp", "teaspoons", "teaspoon"],
-    ["lb", "pounds", "lbs", "pound"],
-    ["stick", "sticks"],
-    ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
-]
-
-
 ml_list = {
     "mL": 1,
     "L": 1000,
@@ -37,7 +54,6 @@ ml_list = {
     "tbsp": 15,
     "tsp": 5
 }
-
 g_list = {
     "g": 1,
     "lb": 454,
@@ -46,51 +62,9 @@ g_list = {
 }
 
 
-for item in units_list:
-
-    if item in ml_list:
-        convert = amount_list[count] * ml_list[item]
-        divide = convert / 250
-        count += 1
-        print(convert, divide)
-
-        with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
-            conversions_sheet = csv.DictReader(csvfile)
-            for x in ingredients_list:
-                for row in conversions_sheet:
-                    if x == row["Ingredients"]:
-
-                        if float(row["grams per 250ml"]) in previous:
-                            break
-
-                        else:
-                            print(row["grams per 250ml"])
-                            conversion = divide * float(row["grams per 250ml"])
-                            converted_amount_list.append(round(conversion, 2))
-                            converted_units_list.append("g")
-                            previous.append(conversion / divide)
-                            print(previous)
-                            print(conversion)
-
-    if item in g_list:
-        convert = amount_list[count] * g_list[item]
-        count += 1
-        print(convert)
-        converted_amount_list.append(convert)
-        converted_units_list.append("g")
-
-    if item == "":
-        ind = units_list.index(item)
-        converted_amount_list.append(amount_list[ind])
-        converted_units_list.append("")
-
+for y in units_list:
+    converted = conversion_check(y)
+    converted_amount_list.append(converted)
 
 print(converted_amount_list)
 print(converted_units_list)
-
-''' else:
-ind = units_list.index(item)
-if len(converted_amount_list) > 0:
-    if converted_amount_list[-1] != amount_list[ind]:
-        converted_amount_list.append(amount_list[ind])
-break '''

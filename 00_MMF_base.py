@@ -1,8 +1,5 @@
 # import statements
-
 import csv
-with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
-    conversions_sheet = csv.DictReader(csvfile)
 
 
 # ------ functions ------
@@ -68,24 +65,6 @@ def int_check(question):
 
 # checks that the unit entered is valid
 def unit_check(question):
-    # list of units that the user is allowed to enter
-    valid_unit_list = [
-        [""],
-        ["g", "grams", "gram"],
-        ["mg", "milligrams", "milligram"],
-        ["kg", "kilograms", "kilogram"],
-        ["mL", "millilitres", "ml", "mls", "millilitre"],
-        ["L", "litres", "l", "litre"],
-        ["quart", "quarts", "fl qt", "qt", "q"],
-        ["pint", "pints", "fl pt", "pt", "p"],
-        ["cup", "cups", "c"],
-        ["tbsp", "tablespoons", "tablespoon", "tbs"],
-        ["tsp", "teaspoons", "teaspoon"],
-        ["lb", "pounds", "lbs", "pound"],
-        ["stick", "sticks"],
-        ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
-    ]
-
     valid = False
 
     # puts the users input in lowercase
@@ -106,6 +85,53 @@ def unit_check(question):
             print("Error: Please enter a valid unit")
 
 
+# converts the ingredients entered to mls or grams
+def convert(obj):
+
+    ind = units_list.index(obj)
+    valid = False
+
+    while not valid:
+        with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
+            conversions_sheet = csv.DictReader(csvfile)
+
+            # if the ingredient/unit is measured in mls, first convert the amount to cups (250ml)
+            if obj in ml_list:
+                conversion = amount_list[ind] * ml_list[obj]
+                divide = conversion / 250
+
+                # then find the ingredient name and amount of grams per 250ml of the ingredient
+                for x in ingredients_list:
+                    for row in conversions_sheet:
+
+                        try:
+                            # if the ingredient is included in the csv, then multiply the amount needed with the amount
+                            # of grams per 250ml of the respective ingredient and round it to 2 decimal places before
+                            # returning the answer
+                            if x == row["Ingredients"]:
+                                conversion = round(divide * float(row["grams per 250ml"]), 2)
+                                converted_units_list.append("g")
+                                return conversion
+
+                        # if the name of the ingredient is not listed in the csv, then return the amount in mls
+                        finally:
+                            converted_units_list.append("mL")
+                            return conversion
+
+            # if the ingredient/unit is measured in grams, then simply multiply the amount of ingredient by the number
+            # of grams per said unit to get the converted amount in grams
+            if obj in g_list:
+                conversion = amount_list[ind] * g_list[obj]
+                converted_units_list.append("g")
+                return conversion
+
+            # if the ingredient has no unit (e.g. 3 eggs) then leave as is
+            if obj == "":
+                conversion = amount_list[ind]
+                converted_units_list.append("")
+                return conversion
+
+
 # ------ Main Routine ------
 
 # dictionaries / lists to hold data
@@ -113,11 +139,45 @@ instructions = "This program will help you to convert your recipes to grams and 
                "prompted, please enter individually the name of your recipe, the names of the ingredients, the unit\n" \
                "and amount of which these ingredients are measured in, and the serving size of your recipe. Then \n" \
                "the program will write a new and improved recipe for you to enjoy! :)\n"
+valid_unit_list = [
+    [""],
+    ["g", "grams", "gram"],
+    ["mg", "milligrams", "milligram"],
+    ["kg", "kilograms", "kilogram"],
+    ["mL", "millilitres", "ml", "mls", "millilitre"],
+    ["L", "litres", "l", "litre"],
+    ["quart", "quarts", "fl qt", "qt", "q"],
+    ["pint", "pints", "fl pt", "pt", "p"],
+    ["cup", "cups", "c"],
+    ["tbsp", "tablespoons", "tablespoon", "tbs"],
+    ["tsp", "teaspoons", "teaspoon"],
+    ["lb", "pounds", "lbs", "pound"],
+    ["stick", "sticks"],
+    ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
+]
+ml_list = {
+    "mL": 1,
+    "L": 1000,
+    "quart": 946,
+    "pint": 473,
+    "cup": 250,
+    "tbsp": 15,
+    "tsp": 5
+}
+g_list = {
+    "g": 1,
+    "lb": 454,
+    "stick": 113,
+    "oz": 28.35
+}
 exit_code = "xxx"
 ingredients_list = []
 units_list = []
 amount_list = []
-converted_list = []
+converted_units_list = []
+converted_amount_list = []
+finished_amount_list = []
+converted_recipe = []
 count = 0
 
 # prints instructions for user if they've never used this program before
@@ -184,10 +244,17 @@ scale_factor = round(desired_size / serving_size, 2)
 print("The scale factor is: " + str(scale_factor))
 
 # convert relevant ingredients to grams
+for item in units_list:
+    converted = convert(item)
+    converted_amount_list.append(converted)
 
 # scale ingredients
+for item in converted_amount_list:
+    scale = item * scale_factor
+    finished_amount_list.append(scale)
 
 # output new, updated ingredient list
+print("Here is your completed recipe list:\n\n")
 print(recipe_name.title() + "\n\nIngredients:")
 
 count = 0
@@ -197,10 +264,11 @@ while done is False:
 
     # puts everything into one recipe list
     if count != len(ingredients_list):
-        converted_list.append(str(amount_list[count]) + " " + units_list[count] + " " + ingredients_list[count])
+        converted_recipe.append(str(finished_amount_list[count]) + " " + converted_units_list[count] + " " +
+                                ingredients_list[count])
         count += 1
 
     else:
         done = True
-        finished_list = "\n".join(converted_list)
+        finished_list = "\n".join(converted_recipe)
         print(finished_list)
