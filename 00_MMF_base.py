@@ -86,9 +86,8 @@ def unit_check(question):
 
 
 # converts the ingredients entered to mls or grams
-def convert(obj):
+def convert_grams(obj):
 
-    ind = units_list.index(obj)
     valid = False
 
     while not valid:
@@ -101,22 +100,21 @@ def convert(obj):
                 divide = conversion / 250
 
                 # then find the ingredient name and amount of grams per 250ml of the ingredient
-                for x in ingredients_list:
+                try:
                     for row in conversions_sheet:
-
-                        try:
-                            # if the ingredient is included in the csv, then multiply the amount needed with the amount
-                            # of grams per 250ml of the respective ingredient and round it to 2 decimal places before
-                            # returning the answer
-                            if x == row["Ingredients"]:
-                                conversion = round(divide * float(row["grams per 250ml"]), 2)
-                                converted_units_list.append("g")
-                                return conversion
-
-                        # if the name of the ingredient is not listed in the csv, then return the amount in mls
-                        finally:
-                            converted_units_list.append("mL")
+                        # if the ingredient is included in the csv, then multiply the amount needed with the amount
+                        # of grams per 250ml of the respective ingredient and round it to 2 decimal places before
+                        # returning the answer
+                        if ingredients_list[ind] == row["Ingredients"]:
+                            conversion = round(divide * float(row["grams per 250ml"]), 2)
+                            converted_units_list.append("g")
                             return conversion
+
+                # if the name of the ingredient is not listed in the csv, then return the amount in mls
+                finally:
+                    if ingredients_list[ind] != row["Ingredients"]:
+                        converted_units_list.append("mL")
+                        return conversion
 
             # if the ingredient/unit is measured in grams, then simply multiply the amount of ingredient by the number
             # of grams per said unit to get the converted amount in grams
@@ -171,14 +169,15 @@ g_list = {
     "oz": 28.35
 }
 exit_code = "xxx"
+count = 0
 ingredients_list = []
 units_list = []
 amount_list = []
+ind_list = []
 converted_units_list = []
 converted_amount_list = []
 finished_amount_list = []
 converted_recipe = []
-count = 0
 
 # prints instructions for user if they've never used this program before
 used_before = string_check("Have you used this program before? ", ["yes", "no"])
@@ -245,7 +244,18 @@ print("The scale factor is: " + str(scale_factor))
 
 # convert relevant ingredients to grams
 for item in units_list:
-    converted = convert(item)
+    ind = units_list.index(item)
+
+    # ensures that every amount is converted once, and that there is no errors when 2 ingredients have the same unit
+    if ind not in ind_list:
+        pass
+
+    else:
+        while ind in ind_list:
+            ind += 1
+
+    ind_list.append(ind)
+    converted = convert_grams(item)
     converted_amount_list.append(converted)
 
 # scale ingredients

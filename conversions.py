@@ -3,7 +3,6 @@ import csv
 
 def conversion_check(item):
 
-    ind = units_list.index(item)
     valid = False
 
     while not valid:
@@ -24,11 +23,13 @@ def conversion_check(item):
                             print(convert)
                             return convert
 
-                except:
-                    converted_units_list.append("mL")
-                    return convert
+                finally:
+                    if ingredients_list[ind] != row["Ingredients"]:
+                        converted_units_list.append("mL")
+                        return convert
 
             if item in g_list:
+                print(amount_list[ind])
                 convert = amount_list[ind] * g_list[item]
                 print(convert)
                 converted_units_list.append("g")
@@ -40,11 +41,12 @@ def conversion_check(item):
                 return convert
 
 
-ingredients_list = ["flour", "milk", "eggs", "hello", "no"]
-units_list = ["cup", "tsp", "", "lb", "tbsp"]
-amount_list = [2, 3, 4, 5, 6]
+ingredients_list = ["flour", "milk", "eggs", "hello", "no", "chicken", "salt", "pepper"]
+units_list = ["cup", "tsp", "", "lb", "tbsp", "g", "g", "g"]
+amount_list = [2, 3, 4, 5, 6, 500, 10, 5]
 converted_units_list = []
 converted_amount_list = []
+ind_list = []
 ml_list = {
     "mL": 1,
     "L": 1000,
@@ -63,6 +65,18 @@ g_list = {
 
 
 for y in units_list:
+    ind = units_list.index(y)
+
+    if ind not in ind_list:
+        pass
+
+    else:
+        while ind in ind_list:
+            ind += 1
+
+    ind_list.append(ind)
+    print(ind)
+    print(ind_list)
     converted = conversion_check(y)
     converted_amount_list.append(converted)
 
