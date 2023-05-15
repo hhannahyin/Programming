@@ -87,7 +87,6 @@ def unit_check(question):
 
 # converts the ingredients entered to mls or grams
 def convert_grams(obj):
-
     valid = False
 
     while not valid:
@@ -130,13 +129,19 @@ def convert_grams(obj):
                 return conversion
 
 
+# removes any unnecessary '.0' from numbers
+def format_num(num):
+
+    if num % 1 == 0:
+        return int(num)
+
+    else:
+        return num
+
+
 # ------ Main Routine ------
 
 # dictionaries / lists to hold data
-instructions = "This program will help you to convert your recipes to grams and resize them to your liking. When \n" \
-               "prompted, please enter individually the name of your recipe, the names of the ingredients, the unit\n" \
-               "and amount of which these ingredients are measured in, and the serving size of your recipe. Then \n" \
-               "the program will write a new and improved recipe for you to enjoy! :)\n"
 valid_unit_list = [
     [""],
     ["g", "grams", "gram"],
@@ -180,13 +185,17 @@ finished_amount_list = []
 converted_recipe = []
 
 # prints instructions for user if they've never used this program before
+print("Welcome to the Recipe Converter!")
 used_before = string_check("Have you used this program before? ", ["yes", "no"])
 
 if used_before == "no":
-    print(instructions)
+    print("This program will help you to convert your recipes to grams and resize them to your liking. When \n"
+          "prompted, please enter individually the name of your recipe, the names of the ingredients, the unit\n"
+          "and amount of which these ingredients are measured in, and the serving size of your recipe. Then \n"
+          "the program will write a new and improved recipe for you to enjoy! :)\n")
 
 else:
-    print("OK! Thank you for your continued support towards this program :)\n")
+    print("Thank you for your continued support towards this program :)\n")
 
 # get recipe name
 print("Please enter the name of your recipe")
@@ -213,7 +222,7 @@ while not ok:
     # ends the loops and prints the list of ingredients
     elif ingredient_name == exit_code and count >= 2:
         ok = True
-        print("Here is your list of ingredients:")
+        print("\nHere is your list of ingredients:")
         print(ingredients_list)
 
     # adds an ingredient to the list
@@ -222,25 +231,32 @@ while not ok:
         count += 1
 
 # gets the unit of measurement for every ingredient entered previously
+print("\nNow please enter in the unit that each ingredient in measured in, e.g. grams")
+
 for item in ingredients_list:
     unit_name = unit_check("Unit of " + item + ": ")
     units_list.append(unit_name)
 
 # gets the amount needed for every ingredient entered previously
+print("\nAnd next please enter the amount of each ingredient needed, e.g if the recipe calls for 500 grams of chicken, "
+      "type '500'")
+
 for item in ingredients_list:
     amount = int_check("Amount of " + item + ": ")
     amount_list.append(float(amount))
 
 # get recipe serving size
-serving_size = float(int_check("What is the serving size of this recipe? "))
+print("\nWhat is the serving size of this recipe?")
+serving_size = float(int_check("Serving size: "))
 
 # ask for servings desired
-desired_size = float(int_check("What is your desired serving size? "))
+print("What is your desired serving size?")
+desired_size = float(int_check("Desired size: "))
 
 # find scale factor
 scale_factor = round(desired_size / serving_size, 2)
 
-print("The scale factor is: " + str(scale_factor))
+print("Your scale factor is: " + str(scale_factor))
 
 # convert relevant ingredients to grams
 for item in units_list:
@@ -260,11 +276,11 @@ for item in units_list:
 
 # scale ingredients
 for item in converted_amount_list:
-    scale = item * scale_factor
+    scale = format_num(round(item * scale_factor, 2))
     finished_amount_list.append(scale)
 
 # output new, updated ingredient list
-print("Here is your completed recipe list:\n\n")
+print("\nHere is your completed recipe list:\n\n")
 print(recipe_name.title() + "\n\nIngredients:")
 
 count = 0
@@ -274,10 +290,11 @@ while done is False:
 
     # puts everything into one recipe list
     if count != len(ingredients_list):
-        converted_recipe.append(str(finished_amount_list[count]) + " " + converted_units_list[count] + " " +
+        converted_recipe.append(str(finished_amount_list[count]) + converted_units_list[count] + " " +
                                 ingredients_list[count])
         count += 1
 
+    # prints the finished recipe list
     else:
         done = True
         finished_list = "\n".join(converted_recipe)
