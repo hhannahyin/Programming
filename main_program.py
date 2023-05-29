@@ -43,7 +43,7 @@ def not_blank(question):
 
 
 # checks that the value entered is a number that is more than 0
-def int_check(question):
+def num_check(question):
     valid = False
 
     while not valid:
@@ -105,7 +105,7 @@ def convert_grams(obj):
                         # of grams per 250ml of the respective ingredient and round it to 2 decimal places before
                         # returning the answer
                         if ingredients_list[ind] == row["Ingredients"]:
-                            conversion = round(divide * float(row["grams per 250ml"]), 2)
+                            conversion = divide * float(row["grams per 250ml"])
                             converted_units_list.append("g")
                             return conversion
 
@@ -124,9 +124,8 @@ def convert_grams(obj):
 
             # if the ingredient has no unit (e.g. 3 eggs) then leave as is
             if obj == "":
-                conversion = amount_list[ind]
                 converted_units_list.append("")
-                return conversion
+                return amount_list[ind]
 
 
 # removes any unnecessary '.0' from numbers
@@ -175,10 +174,10 @@ g_list = {
 }
 exit_code = "xxx"
 count = 0
+ind = 0
 ingredients_list = []
 units_list = []
 amount_list = []
-ind_list = []
 converted_units_list = []
 converted_amount_list = []
 finished_amount_list = []
@@ -205,30 +204,26 @@ recipe_name = not_blank("Recipe Name: ")
 print("\nPlease enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
       "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
-ok = False
+complete = False
 
 # loop to ask for recipe ingredients
-while not ok:
-    ingredient_name = input("Enter an ingredient: ")
+while not complete:
+    ingredient_name = not_blank("Enter an ingredient: ")
 
-    # prints an error message if the name is blank
-    if ingredient_name == "":
-        print("Error: Name cannot be blank")
+    # ends the loops and prints the list of ingredients
+    if ingredient_name == exit_code and count >= 2:
+        complete = True
+        print("\nHere is your list of ingredients:")
+        print(ingredients_list)
 
     # prints an error message if user tries to end the loop but hasn't met the requirements yet
     elif ingredient_name == exit_code and count < 2:
         print("Error: Please enter at least 2 ingredients")
 
-    # ends the loops and prints the list of ingredients
-    elif ingredient_name == exit_code and count >= 2:
-        ok = True
-        print("\nHere is your list of ingredients:")
-        print(ingredients_list)
-
     # adds an ingredient to the list
     else:
-        ingredients_list.append(ingredient_name)
         count += 1
+        ingredients_list.append(ingredient_name)
 
 # gets the unit of measurement for every ingredient entered previously
 print("\nNow please enter in the unit that each ingredient in measured in, e.g. grams")
@@ -242,16 +237,16 @@ print("\nAnd next please enter the amount of each ingredient needed, e.g if the 
       "type '500'")
 
 for item in ingredients_list:
-    amount = int_check("Amount of " + item + ": ")
+    amount = num_check("Amount of " + item + ": ")
     amount_list.append(float(amount))
 
 # get recipe serving size
 print("\nWhat is the serving size of this recipe?")
-serving_size = float(int_check("Serving size: "))
+serving_size = float(num_check("Serving size: "))
 
 # ask for servings desired
 print("What is your desired serving size?")
-desired_size = float(int_check("Desired size: "))
+desired_size = float(num_check("Desired size: "))
 
 # find scale factor
 scale_factor = round(desired_size / serving_size, 2)
@@ -260,19 +255,8 @@ print("Your scale factor is: " + str(scale_factor))
 
 # convert relevant ingredients to grams
 for item in units_list:
-    ind = units_list.index(item)
-
-    # ensures that every amount is converted once, and that there is no errors when 2 ingredients have the same unit
-    if ind not in ind_list:
-        pass
-
-    else:
-        while ind in ind_list:
-            ind += 1
-
-    ind_list.append(ind)
-    converted = convert_grams(item)
-    converted_amount_list.append(converted)
+    converted_amount_list.append(convert_grams(item))
+    ind += 1
 
 # scale ingredients
 for item in converted_amount_list:
@@ -284,18 +268,13 @@ print("\nHere is your completed recipe list:\n\n")
 print(recipe_name.title() + "\n\nIngredients:")
 
 count = 0
-done = False
 
-while done is False:
+# puts everything into one recipe list
+while count != len(ingredients_list):
+    converted_recipe.append(str(finished_amount_list[count]) + converted_units_list[count] + " " +
+                            ingredients_list[count])
+    count += 1
 
-    # puts everything into one recipe list
-    if count != len(ingredients_list):
-        converted_recipe.append(str(finished_amount_list[count]) + converted_units_list[count] + " " +
-                                ingredients_list[count])
-        count += 1
-
-    # prints the finished recipe list
-    else:
-        done = True
-        finished_list = "\n".join(converted_recipe)
-        print(finished_list)
+# prints the finished recipe list
+finished_list = "\n".join(converted_recipe)
+print(finished_list)
