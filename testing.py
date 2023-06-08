@@ -21,7 +21,6 @@ g_list = {
     "oz": 28.35
 }
 count = 0
-previous = []
 
 
 # conversions

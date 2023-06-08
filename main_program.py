@@ -1,48 +1,42 @@
-# import statements
+# Import Statements
 import csv
 
 
-# ------ functions ------
+# ------ Functions ------
 
-# checks that the response entered is yes or no
+# Function for checking string input is a valid answer
 def string_check(question, answer):
     valid = False
 
-    # puts the users input in lowercase
     while not valid:
         response = input(question).lower()
 
-        # if the response is yes or no, then the answer is accepted and the program continues
         if response in answer:
             return response
 
         else:
-            # checks if the user possibly entered 'y' or 'n' for short of yes/no and accepts that answer too
             for thing in answer:
                 if response == thing[0]:
                     return thing
 
-            # prints an error message if the answer is not yes or no
             print("Error: Please answer with yes or no")
 
 
-# checks that the name is not blank
+# Function for checking for blank inputs
 def not_blank(question):
     valid = False
 
     while not valid:
         response = input(question)
 
-        # if the name is not blank, then the program continues
         if response != "":
             return response
 
-        # if the name is blank, then an error message is printed and the loop is repeated
         else:
             print("Error: Name cannot be blank")
 
 
-# checks that the value entered is a number that is more than 0
+# Function for checking for number inputs above 0
 def num_check(question):
     valid = False
 
@@ -50,42 +44,33 @@ def num_check(question):
         response = input(question)
 
         try:
-            # error message is printed if the number is equal to or less than 0, loop repeats
             if float(response) <= 0:
                 print("Error: Number must be more than 0")
 
-            # if the value meets the criteria, program continues
             else:
                 return response
 
-        # if the value entered cannot be turned into a float, then an error message is printed and the loop repeats
         except ValueError:
             print("Error: Please enter a number")
 
 
-# checks that the unit entered is valid
+# Function for checking input is in the list of valid units
 def unit_check(question):
     valid = False
 
-    # puts the users input in lowercase
     while not valid:
         response = input(question).lower()
 
-        # looks for the unit entered in the valid list of units
         for var_list in valid_unit_list:
             if response in var_list:
-                # changes the response to the first item in the list of different names for the same item
-                # (for easy organisation)
                 response = var_list[0]
-                # if answer is valid then it is accepted and program continues
                 return response
 
-        # prints an error message when the unit that the user typed is not one of the units in the valid list
         else:
             print("Error: Please enter a valid unit")
 
 
-# converts the ingredients entered to mls or grams
+# Function for converting ingredients to grams
 def convert_grams(obj):
     valid = False
 
@@ -93,42 +78,33 @@ def convert_grams(obj):
         with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
             conversions_sheet = csv.DictReader(csvfile)
 
-            # if the ingredient/unit is measured in mls, first convert the amount to cups (250ml)
             if obj in ml_list:
                 conversion = amount_list[ind] * ml_list[obj]
                 divide = conversion / 250
 
-                # then find the ingredient name and amount of grams per 250ml of the ingredient
                 try:
                     for row in conversions_sheet:
-                        # if the ingredient is included in the csv, then multiply the amount needed with the amount
-                        # of grams per 250ml of the respective ingredient and round it to 2 decimal places before
-                        # returning the answer
                         if ingredients_list[ind] == row["Ingredients"]:
                             conversion = divide * float(row["grams per 250ml"])
                             converted_units_list.append("g")
                             return conversion
 
-                # if the name of the ingredient is not listed in the csv, then return the amount in mls
                 finally:
                     if ingredients_list[ind] != row["Ingredients"]:
                         converted_units_list.append("mL")
                         return conversion
 
-            # if the ingredient/unit is measured in grams, then simply multiply the amount of ingredient by the number
-            # of grams per said unit to get the converted amount in grams
             if obj in g_list:
                 conversion = amount_list[ind] * g_list[obj]
                 converted_units_list.append("g")
                 return conversion
 
-            # if the ingredient has no unit (e.g. 3 eggs) then leave as is
             if obj == "":
                 converted_units_list.append("")
                 return amount_list[ind]
 
 
-# removes any unnecessary '.0' from numbers
+# Function for removing '.0'
 def format_num(num):
 
     if num % 1 == 0:
@@ -140,7 +116,7 @@ def format_num(num):
 
 # ------ Main Routine ------
 
-# dictionaries / lists to hold data
+# Dictionaries/Lists
 valid_unit_list = [
     [""],
     ["g", "grams", "gram"],
@@ -173,6 +149,7 @@ g_list = {
     "oz": 28.35
 }
 exit_code = "xxx"
+method = "none"
 count = 0
 ind = 0
 ingredients_list = []
@@ -183,8 +160,8 @@ converted_amount_list = []
 finished_amount_list = []
 converted_recipe = []
 
-# prints instructions for user if they've never used this program before
 print("Welcome to the Recipe Converter!")
+# Instructions
 used_before = string_check("Have you used this program before? ", ["yes", "no"])
 
 if used_before == "no":
@@ -196,43 +173,39 @@ if used_before == "no":
 else:
     print("Thank you for your continued support towards this program :)\n")
 
-# get recipe name
+# Recipe Name
 print("Please enter the name of your recipe")
 recipe_name = not_blank("Recipe Name: ")
 
-# instructions for inputting ingredient names
+# Ingredient Name Collection
 print("\nPlease enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
       "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
 complete = False
 
-# loop to ask for recipe ingredients
 while not complete:
     ingredient_name = not_blank("Enter an ingredient: ")
 
-    # ends the loops and prints the list of ingredients
     if ingredient_name == exit_code and count >= 2:
         complete = True
         print("\nHere is your list of ingredients:")
         print(ingredients_list)
 
-    # prints an error message if user tries to end the loop but hasn't met the requirements yet
     elif ingredient_name == exit_code and count < 2:
         print("Error: Please enter at least 2 ingredients")
 
-    # adds an ingredient to the list
     else:
         count += 1
         ingredients_list.append(ingredient_name)
 
-# gets the unit of measurement for every ingredient entered previously
+# Unit Collection
 print("\nNow please enter in the unit that each ingredient in measured in, e.g. grams")
 
 for item in ingredients_list:
     unit_name = unit_check("Unit of " + item + ": ")
     units_list.append(unit_name)
 
-# gets the amount needed for every ingredient entered previously
+# Amount Collection
 print("\nAnd next please enter the amount of each ingredient needed, e.g if the recipe calls for 500 grams of chicken, "
       "type '500'")
 
@@ -240,41 +213,53 @@ for item in ingredients_list:
     amount = num_check("Amount of " + item + ": ")
     amount_list.append(float(amount))
 
-# get recipe serving size
+# Serving Size
 print("\nWhat is the serving size of this recipe?")
 serving_size = float(num_check("Serving size: "))
 
-# ask for servings desired
+# Servings Desired
 print("What is your desired serving size?")
 desired_size = float(num_check("Desired size: "))
 
-# find scale factor
+# Scale Factor
 scale_factor = round(desired_size / serving_size, 2)
 
-print("Your scale factor is: " + str(scale_factor))
+print("Your scale factor is: " + str(scale_factor) + "\n")
 
-# convert relevant ingredients to grams
+# Convert to Grams
 for item in units_list:
     converted_amount_list.append(convert_grams(item))
     ind += 1
 
-# scale ingredients
+# Scale Ingredients
 for item in converted_amount_list:
     scale = format_num(round(item * scale_factor, 2))
     finished_amount_list.append(scale)
 
-# output new, updated ingredient list
+# Asking for Method
+want_method = string_check("Would you like to add a method to your new recipe? ", ["yes", "no"])
+
+if want_method == "yes":
+    print("Please enter your entire method below! Omit the 'Method:' if your recipe contains it, as this will be added "
+          "on automatically. ")
+    method = not_blank("Enter here: ")
+
+else:
+    pass
+
+# New Ingredient List
 print("\nHere is your completed recipe list:\n\n")
 print(recipe_name.title() + "\n\nIngredients:")
 
 count = 0
 
-# puts everything into one recipe list
 while count != len(ingredients_list):
     converted_recipe.append(str(finished_amount_list[count]) + converted_units_list[count] + " " +
                             ingredients_list[count])
     count += 1
 
-# prints the finished recipe list
+if method != "none":
+    converted_recipe.append("\nMethod:\n" + method)
+
 finished_list = "\n".join(converted_recipe)
 print(finished_list)
