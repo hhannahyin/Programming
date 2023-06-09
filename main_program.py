@@ -149,9 +149,6 @@ g_list = {
     "oz": 28.35
 }
 exit_code = "xxx"
-method = "none"
-count = 0
-ind = 0
 ingredients_list = []
 units_list = []
 amount_list = []
@@ -168,10 +165,10 @@ if used_before == "no":
     print("This program will help you to convert your recipes to grams and resize them to your liking. When \n"
           "prompted, please enter individually the name of your recipe, the names of the ingredients, the unit\n"
           "and amount of which these ingredients are measured in, and the serving size of your recipe. Then \n"
-          "the program will write a new and improved recipe for you to enjoy! :)\n")
+          "the program will write a new and improved recipe for you to enjoy!\n")
 
 else:
-    print("Thank you for your continued support towards this program :)\n")
+    print("Thank you for your continued support towards this program!\n")
 
 # Recipe Name
 print("Please enter the name of your recipe")
@@ -181,6 +178,7 @@ recipe_name = not_blank("Recipe Name: ")
 print("\nPlease enter the names of the ingredients in your recipe. \nDo not include the units or measurements, "
       "just the name. \nPlease type 'xxx' when you have finished submitting ingredients. ")
 
+count = 0
 complete = False
 
 while not complete:
@@ -227,6 +225,7 @@ scale_factor = round(desired_size / serving_size, 2)
 print("Your scale factor is: " + str(scale_factor) + "\n")
 
 # Convert to Grams
+ind = 0
 for item in units_list:
     converted_amount_list.append(convert_grams(item))
     ind += 1
@@ -237,12 +236,19 @@ for item in converted_amount_list:
     finished_amount_list.append(scale)
 
 # Asking for Method
+method = ()
 want_method = string_check("Would you like to add a method to your new recipe? ", ["yes", "no"])
 
 if want_method == "yes":
-    print("Please enter your entire method below! Omit the 'Method:' if your recipe contains it, as this will be added "
-          "on automatically. ")
-    method = not_blank("Enter here: ")
+    print("\nYou may enter as many lines of text as you want. When you're done, enter the exit code 'xxx' on a line by "
+          "itself.")
+    buffer = []
+    while True:
+        line = input("Enter here: ")
+        if line == exit_code:
+            break
+        buffer.append(line)
+    method = "\n".join(buffer)
 
 else:
     pass
@@ -258,8 +264,8 @@ while count != len(ingredients_list):
                             ingredients_list[count])
     count += 1
 
-if method != "none":
-    converted_recipe.append("\nMethod:\n" + method)
+if method != ():
+    converted_recipe.append("\n" + method)
 
 finished_list = "\n".join(converted_recipe)
 print(finished_list)
