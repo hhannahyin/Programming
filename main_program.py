@@ -64,6 +64,10 @@ def unit_check(question):
         for var_list in valid_unit_list:
             if response in var_list:
                 response = var_list[0]
+                try:
+                    plural_list.append(var_list[1])
+                except IndexError:
+                    plural_list.append("")
                 return response
 
         else:
@@ -151,6 +155,7 @@ g_list = {
 exit_code = "xxx"
 ingredients_list = []
 units_list = []
+plural_list = []
 amount_list = []
 converted_units_list = []
 converted_amount_list = []
@@ -206,10 +211,16 @@ for item in ingredients_list:
 # Amount Collection
 print("\nAnd next please enter the amount of each ingredient needed, e.g if the recipe calls for 500 grams of chicken, "
       "type '500'")
-
+count = 0
 for item in ingredients_list:
-    amount = num_check("Amount of " + item + ": ")
+
+    if plural_list[count] == "":
+        amount = num_check("Amount of " + item + ": ")
+
+    else:
+        amount = num_check("Amount (in " + plural_list[count] + ") of " + item + ": ")
     amount_list.append(float(amount))
+    count += 1
 
 # Serving Size
 print("\nWhat is the serving size of this recipe?")
@@ -258,7 +269,6 @@ print("\nHere is your completed recipe list:\n\n")
 print(recipe_name.title() + "\n\nIngredients:")
 
 count = 0
-
 while count != len(ingredients_list):
     converted_recipe.append(str(finished_amount_list[count]) + converted_units_list[count] + " " +
                             ingredients_list[count])
