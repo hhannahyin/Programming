@@ -1,4 +1,5 @@
-import re
+import csv
+
 ''' ingredients_list = ["flour", "milk", "eggs", "hello", "no", "chicken", "salt", "pepper"]
 units_list = ["cup", "tsp", "", "lb", "tbsp", "g", "g", "g"]
 amount_list = [2, 3, 4, 5, 6, 500, 10, 5]
@@ -90,7 +91,14 @@ print(amount_list) '''
         try:
             amount = float(item[0])
         except ValueError:
-            print("Error: Please enter a number")
+            print("Error: Please enter an amount")
+
+        for word in item:
+            if word in valid_unit_list:
+                if len(item) >= 3:
+                    if word.index == 2:
+                        continue
+
         unit = item[1]
         ingredient_name = item[2:]
 
@@ -113,10 +121,10 @@ print(amount_list) '''
         else:
             connect = [amount, unit, ingredient_name]
             join = " ".join(connect)
-            return join
+            return join '''
 
 
-valid_unit_list = [
+''' valid_unit_list = [
     [""],
     ["g", "grams", "gram"],
     ["mg", "milligrams", "milligram"],
@@ -137,7 +145,7 @@ ingredient_list = []
 keep_going = False
 while not keep_going:
     ingredient_list.append(ingredient_check("Enter an ingredient: "))
-    print(ingredient_list) '''
+    print(ingredient_list)
 
 
 def num_check(question):
@@ -242,4 +250,90 @@ while keep_going != "no":
             print("Error: Please enter at least 2 ingredients")
 
         else:
-            break
+            break '''
+
+
+valid_unit_list = [
+    [""],
+    ["g", "grams", "gram"],
+    ["mg", "milligrams", "milligram"],
+    ["kg", "kilograms", "kilogram"],
+    ["mL", "millilitres", "ml", "mls", "millilitre"],
+    ["L", "litres", "l", "litre"],
+    ["quart", "quarts", "fl qt", "qt", "q"],
+    ["pint", "pints", "fl pt", "pt", "p"],
+    ["cup", "cups", "c"],
+    ["tbsp", "tablespoons", "tablespoon", "tbs"],
+    ["tsp", "teaspoons", "teaspoon"],
+    ["lb", "pounds", "lbs", "pound"],
+    ["stick", "sticks"],
+    ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
+]
+ml_list = {
+    "mL": 1,
+    "L": 1000,
+    "quart": 946,
+    "pint": 473,
+    "cup": 250,
+    "tbsp": 15,
+    "tsp": 5
+}
+g_list = {
+    "g": 1,
+    "mg": 0.001,
+    "kg": 1000,
+    "lb": 454,
+    "stick": 113,
+    "oz": 28.35
+}
+exit_code = "xxx"
+ingredients_list = ["flour", "milk", "eggs", "hello", "no", "chicken", "salt", "pepper"]
+units_list = ["cup", "tsp", "", "lb", "tbsp", "g", "g", "g"]
+plural_list = []
+amount_list = [2, 3, 4, 5, 6, 500, 10, 5]
+converted_units_list = []
+converted_amount_list = []
+finished_amount_list = []
+converted_recipe = []
+
+
+def convert_grams(obj):
+    valid = False
+
+    while not valid:
+        with open("conversions.csv", mode="r") as csvfile:
+            conversions_sheet = csv.DictReader(csvfile)
+
+            if obj in ml_list:
+                conversion = amount_list[ind] * ml_list[obj]
+                divide = conversion / 250
+
+                try:
+                    for row in conversions_sheet:
+                        if ingredients_list[ind] == row["Ingredients"]:
+                            conversion = divide * float(row["grams per 250ml"])
+                            converted_units_list.append("g")
+                            return conversion
+
+                finally:
+                    if ingredients_list[ind] != row["Ingredients"]:
+                        converted_units_list.append("mL")
+                        return conversion
+
+            if obj in g_list:
+                conversion = amount_list[ind] * g_list[obj]
+                converted_units_list.append("g")
+                return conversion
+
+            if obj == "":
+                converted_units_list.append("")
+                return amount_list[ind]
+
+
+ind = 0
+for item in units_list:
+    converted_amount_list.append(convert_grams(item))
+    ind += 1
+
+print(converted_amount_list)
+print(converted_units_list)

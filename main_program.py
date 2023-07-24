@@ -45,7 +45,10 @@ def num_check(question):
 
         try:
             if float(response) <= 0:
-                print("Error: Number must be more than 0")
+                print("Error: Number cannot be 0 or less")
+
+            if float(response) < 0.01:
+                print("Error: Number is too small")
 
             else:
                 return response
@@ -79,7 +82,7 @@ def convert_grams(obj):
     valid = False
 
     while not valid:
-        with open("/Users/hannah/Downloads/conversions.csv", mode="r") as csvfile:
+        with open("conversions.csv", mode="r") as csvfile:
             conversions_sheet = csv.DictReader(csvfile)
 
             if obj in ml_list:
@@ -200,6 +203,7 @@ while not complete:
         print("Error: Please enter at least 2 ingredients")
 
     else:
+        print("Accepted. Continue to enter more ingredients or type 'xxx' when done.")
         count += 1
         ingredients_list.append(ingredient_name)
 
@@ -245,8 +249,45 @@ for item in units_list:
 
 # Scale Ingredients
 for item in converted_amount_list:
-    scale = format_num(round(item * scale_factor, 2))
-    finished_amount_list.append(scale)
+    scale = item * scale_factor
+    ind = converted_amount_list.index(item)
+
+    if converted_units_list[ind] == "mg":
+        if scale >= 1000:
+            scale = scale / 1000
+            converted_units_list[ind] = "g"
+
+    if converted_units_list[ind] == "g":
+        if scale < 1:
+            scale = scale * 1000
+            converted_units_list[ind] = "mg"
+
+        if scale >= 1000:
+            scale = scale / 1000
+            converted_units_list[ind] = "kg"
+
+    if converted_units_list[ind] == "kg":
+        if scale < 1:
+            scale = scale * 1000
+            converted_units_list[ind] = "g"
+
+    if converted_units_list[ind] == "mL":
+        if scale >= 1000:
+            scale = scale / 1000
+            converted_units_list[ind] = "L"
+
+    if converted_units_list[ind] == "L":
+        if scale < 1:
+            scale = scale * 1000
+            converted_units_list[ind] = "mL"
+
+    else:
+        pass
+
+    if scale < 0.01:
+        finished_amount_list.append(scale)
+    else:
+        finished_amount_list.append(format_num(round(scale, 2)))
 
 # Asking for Method
 method = ()
