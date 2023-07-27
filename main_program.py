@@ -229,11 +229,11 @@ for item in ingredients_list:
     count += 1
 
 # Serving Size
-print("\nWhat is the serving size of this recipe?")
+print("\nWhat is the serving size of this recipe? (Serving size is how many people the current recipe serves)")
 serving_size = float(num_check("Serving size: "))
 
 # Servings Desired
-print("What is your desired serving size?")
+print("What is your desired serving size? (Desired size is how many people you want the new recipe to serve)")
 desired_size = float(num_check("Desired size: "))
 
 # Scale Factor
