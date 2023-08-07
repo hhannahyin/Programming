@@ -253,7 +253,7 @@ while keep_going != "no":
             break '''
 
 
-valid_unit_list = [
+''' valid_unit_list = [
     [""],
     ["g", "grams", "gram"],
     ["mg", "milligrams", "milligram"],
@@ -336,4 +336,106 @@ for item in units_list:
     ind += 1
 
 print(converted_amount_list)
-print(converted_units_list)
+print(converted_units_list) '''
+
+
+def not_blank(question):
+    valid = False
+
+    while not valid:
+        response = input(question)
+
+        if response != "":
+            return response
+
+        else:
+            print("Error: Name cannot be blank")
+
+
+def unit_check(question):
+    valid = False
+
+    while not valid:
+        response = input(question).lower()
+
+        for var_list in valid_unit_list:
+            if response in var_list:
+                response = var_list[0]
+                try:
+                    plural_list.append(var_list[1])
+                except IndexError:
+                    plural_list.append("")
+                return response
+
+        else:
+            print("Error: Please enter a valid unit")
+
+
+def num_check(question):
+    valid = False
+
+    while not valid:
+        response = input(question)
+
+        try:
+            if float(response) <= 0:
+                print("Error: Number cannot be 0 or less")
+
+            if float(response) < 0.01:
+                print("Error: Number is too small")
+
+            else:
+                return response
+
+        except ValueError:
+            print("Error: Please enter a number")
+
+
+valid_unit_list = [
+    [""],
+    ["g", "grams", "gram"],
+    ["mg", "milligrams", "milligram"],
+    ["kg", "kilograms", "kilogram"],
+    ["mL", "millilitres", "ml", "mls", "millilitre"],
+    ["L", "litres", "l", "litre"],
+    ["quart", "quarts", "fl qt", "qt", "q"],
+    ["pint", "pints", "fl pt", "pt", "p"],
+    ["cup", "cups", "c"],
+    ["tbsp", "tablespoons", "tablespoon", "tbs"],
+    ["tsp", "teaspoons", "teaspoon"],
+    ["lb", "pounds", "lbs", "pound"],
+    ["stick", "sticks"],
+    ["oz", "ounces", "ounce", "fl oz", "fluid ounces", "fluid ounce"]
+]
+exit_code = "xxx"
+ingredients_list = []
+units_list = []
+amount_list =[]
+plural_list = []
+count = 0
+complete = False
+
+while not complete:
+    ingredient_name = not_blank("Enter an ingredient: ")
+
+    if ingredient_name == exit_code and count >= 2:
+        complete = True
+        print("\nHere is your list of ingredients:")
+        print(ingredients_list)
+        print(units_list)
+        print(amount_list)
+
+    elif ingredient_name == exit_code and count < 2:
+        print("Error: Please enter at least 2 ingredients")
+
+    else:
+        ingredients_list.append(ingredient_name)
+        unit_name = unit_check("Unit of " + ingredient_name + ": ")
+        units_list.append(unit_name)
+        if plural_list[count] == "":
+            amount = num_check("Amount of " + ingredient_name + ": ")
+        else:
+            amount = num_check("Amount (in " + plural_list[count] + ") of " + ingredient_name + ": ")
+        amount_list.append(float(amount))
+        count += 1
+        print("Accepted. Continue to enter more ingredients or type 'xxx' when done.")
